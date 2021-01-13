@@ -5,8 +5,8 @@ const ExpressError = require("./expressError");
 var items = require("./fakeDb")
 
 const checkItems = (req,res,next) =>{
-    if(!req.body.name) throw new ExpressError('No Name', 400);
-   if(!req.body.price) throw new ExpressError('No Price', 400);
+    if(!req.body.name) throw new ExpressError('No Name', 404);
+   if(!req.body.price) throw new ExpressError('No Price', 404);
    next()
 
 }
@@ -21,7 +21,7 @@ router.get('/', (req,res,next)=>{
 router.post('/',checkItems, (req,res,next)=>{
    const newItem = {name: req.body.name, price: req.body.price};
    items.push(newItem)
-   res.json({Added: newItem})
+   res.status(201).json({Added: newItem})
 })
 
 //get name by query
@@ -30,7 +30,7 @@ router.post('/',checkItems, (req,res,next)=>{
 router.get('/:name',(req,res,next)=>{
     const found = items.find(r => r.name === req.params.name);
     if(found === undefined){
-        throw new ExpressError('No such thing', 400)}
+        throw new ExpressError('No such thing', 404)}
   res.json(found);
      
 })
@@ -39,7 +39,7 @@ router.get('/:name',(req,res,next)=>{
 router.patch('/:name',checkItems, (req,res,next)=>{
     const foundIndex = items.findIndex(something => something.name === req.params.name );
     console.log(foundIndex);
-    if(foundIndex === -1){ throw new ExpressError('No such Thing', 400)}
+    if(foundIndex === -1){ throw new ExpressError('No such Thing', 404)}
     items.splice(foundIndex,1);
     const newItem = {name: req.body.name, price: req.body.price};
     items.push(newItem)
@@ -51,14 +51,12 @@ router.patch('/:name',checkItems, (req,res,next)=>{
 
 router.delete('/:name',(req,res,next)=>{
     const foundIndex = items.findIndex(something => something.name === req.params.name );
-    if(foundIndex == -1){throw new ExpressError('no item', 400)}
+    if(foundIndex == -1){throw new ExpressError('no item', 404)}
     items.splice(foundIndex,1);
     res.json({message:'Deleted'})
 
 
 })
-
-
 
 
 
