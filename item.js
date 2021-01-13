@@ -29,17 +29,17 @@ router.post('/',checkItems, (req,res,next)=>{
 
 router.get('/:name',(req,res,next)=>{
     
-    const found = items.find(r => r.name === req.query.name);
-    if(!found){
+    const found = items.find(r => r.name === req.params.name);
+    if(found === undefined){
         throw new ExpressError('No such thing', 400)}
-     res.send(found);
+  res.json(found);
      
 })
 
 
 
 router.patch('/:name',checkItems, (req,res,next)=>{
-    const foundIndex = items.findIndex(something => something.name = req.query.name );
+    const foundIndex = items.findIndex(something => something.name === req.params.name );
     if(foudnIndex<0){ throw new ExpressError('No such Thing', 400)}
     items.splice(foundIndex,1);
     const newItem = `{name: ${req.body.name}, price: ${req.body.price}}`;
@@ -51,7 +51,7 @@ router.patch('/:name',checkItems, (req,res,next)=>{
 //delete route
 
 router.delete('/:name',checkItems, (req,res,next)=>{
-    const foundIndex = items.findIndex(something => something.name = req.query.name );
+    const foundIndex = items.findIndex(something => something.name === req.params.name );
     if(foundIndex<0){throw new ExpressError('no item', 400)}
     items.splice(foundIndex,1);
     res.json({message:'Deleted'})
